@@ -1,6 +1,7 @@
 
 let searchBox = document.getElementById('search-box');
 let searchImg = document.getElementById('search-img');
+const loader = document.getElementById('loader');
 
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
@@ -13,6 +14,7 @@ class ResponseError extends Error{
     }
 }
 
+//Funzione che effettua la chiamata all'API
 function searchAQI(e){
     //Fermo il submit del form
     e.preventDefault();
@@ -22,17 +24,25 @@ function searchAQI(e){
     }
 
     let cityName = searchBox.value.toLowerCase();
+    loader.style.display = "block";
+    //Mostrare immagine di caricamento
     fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
-        .then(res => res.json())
+        .then(res => {
+            loader.style.display = "none";
+            return res.json()
+        })
         .then(res => {
             console.log(res);
             if(res.status != "ok"){
-                let err = new ResponseError(res.data);
-                console.log(err);
-                // showResultError(err);
+                throw new ResponseError(res.data);
             }
+            //Posso mostrare i dati
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            showResponseError(err);
+            //Disegnare container con messaggio d'errore
+        });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -46,9 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
 searchBox.addEventListener('keydown', e => {
     //Occorre il setTimeout perchè altrimenti non mi prenderebbe correttamente il value dell'input
     setTimeout(() => {
-        if(e.target.value != "" && e.target.classList.contains('search-box-error')){
-            searchBox.classList.remove('search-box-error');
-            document.querySelector('.search-box-error-message').style.opacity = 0;
+        if(e.target.value != ""){
+            if(e.target.classList.contains('search-box-error')){
+
+                document.querySelector('.search-box-error-message').style.opacity = 0;
+                searchBox.classList.remove('search-box-error');
+            }
+            let errorContainer = document.querySelector('.error-container');
+            console.log(`ErrorContainer --> `,errorContainer)
+            if(errorContainer){
+                let errorContainer = document.querySelector('.error-container')
+                errorContainer.style.opacity = 0;
+                setTimeout(() => errorContainer.remove(),1000);
+            }
         }
     },1);
 })
@@ -58,6 +78,15 @@ searchBox.addEventListener('blur', e => {
         showErrorSearch();
     }
 })
+
+function showResponseError(errorObj){
+    let errorContainer = document.createElement('div');
+    errorContainer.classList.add('error-container');
+    errorContainer.innerText = errorObj.message;
+    errorContainer.style.opacity = 1;
+
+    document.getElementById('data-container').append(errorContainer);
+}
 
 //Mostra l'errore di ricerca
 function showErrorSearch(){
