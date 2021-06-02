@@ -104,7 +104,7 @@ function drawAlert(text) {
     let line = document.createElement('div');
     line.className = "line";
     alert.append(line);
-    document.getElementById('data-container').append(alert);
+    document.getElementById('head-section').append(alert);
 
     //posizionamento alert al fondo (alzato di 10 pixel) e al centro della pagina
     let coordsAlert = alert.getBoundingClientRect();

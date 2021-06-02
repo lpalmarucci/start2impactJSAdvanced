@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/style.css"></link>
 </head>
 <body>
-    <header>
+    <header id="head-section">
         <h1>Check the air quality of your city</h1>
         <form method="POST" onsubmit="searchAQI">
             <div>
@@ -17,10 +17,10 @@
             </div>
             <img src="images/search.svg" alt="search" id="search-img" tabindex="2"/>
         </form>
+        <img id="loader" src="images/plant.gif" width="70" height="70"/> 
     </header>
 
     <section id="data-container">
-        <img id="loader" src="images/plant.gif" width="70" height="70"/> 
     </section>
 
     <footer>
