@@ -38,12 +38,36 @@ function searchAQI(e){
                 throw new ResponseError(res.data);
             }
             //Posso mostrare i dati
+            drawData(res.data);
         })
         .catch(err => {
             console.error(err);
             //Disegno alert con messaggio d'errore
             drawAlert(err.message);
         });
+}
+
+//Draw function for data
+function drawData(data){
+    updatedAt(new Date(data.time.s));
+}
+
+function updatedAt(date){
+    let h1 = document.createElement('h1');
+    let months = date.getMonth();
+    months = months < 10 ? `0${months}` : months;
+
+    let days = date.getDate();
+    days = days < 10 ? `0${days}` : days;
+
+    let hours = date.getHours();
+    hours = hours < 10 ? `0${hours}` : hours;
+
+
+    let minutes = date.getMinutes();
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    h1.innerHTML = `Last update at ${date.getFullYear()}/${months}/${days} ${hours}:${minutes}`;
+    document.getElementById('data-container').append(h1);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
