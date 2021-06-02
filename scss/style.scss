@@ -66,21 +66,28 @@ header{
 
     #loader{
         display: none;
-        // margin: 50px;
     }
 }
 
-.error-container{
-    height: 80px;
-    width: 50vw;
-    background-color: rgb(190, 93, 93);
-    // color: rgb(131, 0, 0);
-    color: white;
-    border-radius: 20px;
-    box-shadow: 3px 3px lightgrey;
-    margin: 0 auto;
-    font-size: 30px;
-    text-align: center;
-    line-height: 80px;
-    transition: opacity 0.5s;
+#alert{
+    width: 330px;
+    background-color: rgb(184, 241, 255);
+    opacity: 1;
+    transition: opacity 0.4s;
+    border-radius: 10px 10px 0 0;
+    
+    .text-alert{
+        display: block;
+        text-align: center;
+        font-size: 17pt;
+        padding: 20px 40px;
+        background-color: rgb(202, 70, 70);
+    }
+
+    .line{
+        height: 5px;
+        background-color: rgb(94, 38, 38);
+        border: 0px;
+        border-radius: 0px 0px 0px 10px;
+    }
 }

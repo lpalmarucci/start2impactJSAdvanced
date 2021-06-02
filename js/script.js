@@ -28,6 +28,7 @@ function searchAQI(e){
     //Mostrare immagine di caricamento
     fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
         .then(res => {
+            //Ho ricevuto i dati, nascondo il loader
             loader.style.display = "none";
             return res.json()
         })
@@ -40,8 +41,8 @@ function searchAQI(e){
         })
         .catch(err => {
             console.error(err);
-            showResponseError(err);
-            //Disegnare container con messaggio d'errore
+            //Disegno alert con messaggio d'errore
+            drawAlert(err.message);
         });
 }
 
@@ -79,15 +80,6 @@ searchBox.addEventListener('blur', e => {
     }
 })
 
-function showResponseError(errorObj){
-    let errorContainer = document.createElement('div');
-    errorContainer.classList.add('error-container');
-    errorContainer.innerText = errorObj.message;
-    errorContainer.style.opacity = 1;
-
-    document.getElementById('data-container').append(errorContainer);
-}
-
 //Mostra l'errore di ricerca
 function showErrorSearch(){
     searchBox.focus();
@@ -95,4 +87,48 @@ function showErrorSearch(){
     let errorMessage = document.querySelector('.search-box-error-message');
     errorMessage.style.display = 'inline-block';
     errorMessage.style.opacity = 1;
+}
+
+function drawAlert(text) {
+    alertShowInPage = true;
+
+    //creating alert
+    let alert =  document.createElement('footer');
+    alert.setAttribute('id','alert');
+
+    let span = document.createElement('span');
+    span.textContent = text;
+    span.classList.add('text-alert');
+    alert.append(span);
+
+    let line = document.createElement('div');
+    line.className = "line";
+    alert.append(line);
+    document.getElementById('data-container').append(alert);
+
+    //posizionamento alert al fondo (alzato di 10 pixel) e al centro della pagina
+    let coordsAlert = alert.getBoundingClientRect();
+    alert.style.position = 'absolute';
+    alert.style.top = window.innerHeight - coordsAlert.height - 10 + 'px';
+    alert.style.left = (window.innerWidth - coordsAlert.width)/2 + "px";
+
+    //Gestione animazione a scomparsa con il setInterval + CustomEvent
+    let timerEvent = new CustomEvent('timerExpired');
+    line.addEventListener('timerExpired', () => {
+        document.getElementById('alert').style.opacity = 0;
+        clearInterval(interval);
+        //Posso permettere di disegnare un altro alert
+        alertShowInPage = false;
+        //Per permettere l'animazione dell'alert
+        setTimeout(() => document.getElementById('alert').remove(),400);
+    })
+
+    let timerInterval = setInterval(() => {
+        let width = line.getBoundingClientRect().width;
+        if(width - 1 === 0){
+            interval = timerInterval;
+            line.dispatchEvent(timerEvent);
+        } 
+        line.style.width =  `${width - 1}px`;
+    }, 6);
 }
