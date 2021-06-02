@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Open Sans"
+}
+
+header{
+    margin: 20px;
+    text-align: center;
+    width: 50vw;
+    margin: 0 auto;
+    
+    h1{
+        margin: 30px;
+    }
+
+}
+section{
+    form{
+        #search-img{
+            width: 50px;
+            height: 50px;
+        }
+    }
+}
