@@ -5,6 +5,14 @@ let searchImg = document.getElementById('search-img');
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
 
+class ResponseError extends Error{
+    constructor(message){
+        super(message);
+        this.name = "ResponseError";
+        this.message = `[Error] ${message}`
+    }
+}
+
 function searchAQI(e){
     //Fermo il submit del form
     e.preventDefault();
