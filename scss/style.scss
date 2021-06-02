@@ -17,13 +17,42 @@ header{
     h1{
         margin: 30px;
     }
-
-}
-section{
     form{
-        #search-img{
-            width: 50px;
+        width: 55%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        justify-items: center;
+    
+        #search-box{
+            width: 80%;
             height: 50px;
+            font-size: 25px;
+            padding: 10px 10px 10px 25px;
+
+            &:focus{outline: none}
+        }
+
+        .search-box-error{
+            border: 2px solid red;
+        }
+    
+        #search-img{
+            width: 40px;
+            height: 40px;
+            margin: 5px 5px 5px 15px;
+            cursor: pointer;
+
+            &:focus{outline:none}
+        }
+
+        .search-box-error-message{
+            display: inline-block;
+            padding-top: 10px;
+            opacity: 0;
+            color: red;
+            transition: opacity 0.3s;
         }
     }
 }
