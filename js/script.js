@@ -49,10 +49,18 @@ function searchAQI(e){
 
 //Draw function for data
 function drawData(data){
+    let bodyTable = document.querySelector('.table-data > tbody');
+    if(bodyTable)
+        bodyTable.remove();
     updatedAt(new Date(data.time.s));
+
+    populateTable(data);
 }
 
 function updatedAt(date){
+    let title = document.querySelector('#data-container > h1');
+    if(title)
+        title.remove();
     let h1 = document.createElement('h1');
     let months = date.getMonth();
     months = months < 10 ? `0${months}` : months;
@@ -67,7 +75,15 @@ function updatedAt(date){
     let minutes = date.getMinutes();
     minutes = minutes < 10 ? `0${minutes}` : minutes;
     h1.innerHTML = `Last update at ${date.getFullYear()}/${months}/${days} ${hours}:${minutes}`;
-    document.getElementById('data-container').append(h1);
+    document.getElementById('data-container').insertAdjacentElement('afterbegin',h1);
+}
+
+function populateTable(data){
+    let tbody = document.createElement('tbody');
+
+    console.log(data);
+
+    document.querySelector('.table-data').append(tbody);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -88,7 +104,6 @@ searchBox.addEventListener('keydown', e => {
                 searchBox.classList.remove('search-box-error');
             }
             let errorContainer = document.querySelector('.error-container');
-            console.log(`ErrorContainer --> `,errorContainer)
             if(errorContainer){
                 let errorContainer = document.querySelector('.error-container')
                 errorContainer.style.opacity = 0;
