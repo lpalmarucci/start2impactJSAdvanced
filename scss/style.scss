@@ -70,24 +70,27 @@ header{
 
 #alert{
     width: 330px;
-    background-color: rgb(184, 241, 255);
+    border: 2px solid red;
+    background-color: #f9c7c6;
     opacity: 1;
     transition: opacity 0.4s;
-    border-radius: 10px 10px 0 0;
+    border-radius: 10px;
+    color: red;
+    cursor: pointer;
+    z-index: 2;
     
     .text-alert{
         display: block;
         text-align: center;
         font-size: 17pt;
         padding: 20px 40px;
-        background-color: rgb(202, 70, 70);
     }
 
     .line{
         height: 5px;
-        background-color: rgb(94, 38, 38);
-        border: 0px;
-        border-radius: 0px 0px 0px 10px;
+        background-color: white;
+        border-radius: 0px 0px 0px 3px;
+        margin: 0px 0px 1px 1px;
     }
 }
 
