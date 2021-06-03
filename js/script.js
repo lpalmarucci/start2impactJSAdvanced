@@ -95,6 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 searchBox.addEventListener('keydown', e => {
+    //Impedisco di inserire caratteri che non siano lettere
+    let keyCode = e.code.toLowerCase();
+    if(keyCode.indexOf('key') === -1 && keyCode != "backspace" && keyCode != "enter")
+        e.preventDefault();
     //Occorre il setTimeout perchè altrimenti non mi prenderebbe correttamente il value dell'input
     setTimeout(() => {
         if(e.target.value != ""){
