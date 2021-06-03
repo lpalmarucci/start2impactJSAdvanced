@@ -80,7 +80,46 @@ function drawData(data){
     populateTable(data);
     updatedAt(new Date(data.time.s));
 
+    console.log(data);
+    //Controllo se ci sono dei valori forecast da mostrare
+    if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0)
+        showForecast(data.forecast.daily);
+
 }
+
+function showForecast(forecastObj){
+    for(let indicator in forecastObj){
+
+        // let table = document.createElement('table');
+        let div = document.createElement('div');
+        div.className = "forecast-wrapper";
+        let table = document.createElement('table');
+        table.className = "single-forecast";
+        let thead = document.createElement('thead');
+        let tr = document.createElement('tr');
+        let th = document.createElement('th');
+        th.innerText = indicator;
+        tr.append(th);
+        thead.append(tr);
+        table.append(thead);
+        
+        let tbody = document.createElement('tbody');
+        
+        for(let {min, max, day} of forecastObj[indicator]){
+            let tr = document.createElement('tr');
+            let date = new Date(day);
+            console.log(min, max, day);
+            let td = document.createElement('td');
+            td.innerText = `${date} | ${min} | ${max}`;
+            tr.append(td);
+            tbody.append(tr);
+        }
+        table.append(tbody);
+        div.append(table);
+        document.getElementById('forecast-section').append(div);
+    }
+}
+
 //Mostro la data a cui risalgono i dati
 function updatedAt(date){
     document.querySelector('.updated-at')?.remove();
@@ -141,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 searchBox.addEventListener('keydown', e => {
     //Impedisco di inserire caratteri che non siano lettere
     let keyCode = e.code.toLowerCase();
-    if(keyCode.indexOf('key') === -1 && keyCode != "backspace" && keyCode != "tab" || keyCode ==  "enter")
+    if(keyCode.indexOf('key') === -1 && keyCode != "space" && keyCode != "backspace" && keyCode != "tab" || keyCode ==  "enter")
         e.preventDefault();
     //Occorre il setTimeout perchè altrimenti non mi prenderebbe correttamente il value dell'input
     setTimeout(() => {

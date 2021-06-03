@@ -110,40 +110,6 @@ header{
         font-size: 25px;
     }
 
-    .table-container{
-        border: 2px solid black;
-        height: 50vh;
-        min-height: 250px;
-        overflow: auto;
-
-        .table-data{
-            width: 50vw;
-            max-width: 350px;
-            margin: 0 auto;
-            font-size: 20px;
-    
-            tbody{
-                border: 1px solid black;
-            }
-    
-            tr{
-                text-align: center;
-            }
-    
-            td, th{
-                padding: 15px;
-            }
-
-            thead::after{
-                width: 112px;
-                height: 47px;
-                border-bottom: 1px solid black;
-                position: absolute;
-            }
-        }
-    }
-
-
     .updated-at{
         color:grey;
         font-size: 16px;
@@ -151,4 +117,53 @@ header{
         margin: 10px;
     }
 
+}
+
+.table-container{
+    border: 2px solid black;
+    height: 50vh;
+    min-height: 250px;
+    overflow: auto;
+
+}
+.table-data,.single-forecast{
+    width: 50vw;
+    max-width: 350px;
+    margin: 0 auto;
+    font-size: 20px;
+
+    tbody{
+        border: 1px solid black;
+    }
+    tr{
+        text-align: center;
+    }
+    
+    td, th{
+        padding: 15px;
+    }
+}
+
+
+#forecast-section{
+    width: 80vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+
+    .forecast-wrapper{
+        width: auto;
+        margin: 15px;
+    }
+
+    .single-forecast{
+        width:auto;
+        font-size: 18px;
+
+        td{
+            padding: 5px;
+        }
+    }
 }
