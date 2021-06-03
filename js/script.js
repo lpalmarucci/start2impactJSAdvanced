@@ -1,6 +1,6 @@
-let searchBox = document.getElementById('search-box');
-let searchImg = document.getElementById('search-img');
-let gpsImg = document.getElementById('gps-img');
+const searchBox = document.getElementById('search-box');
+const searchImg = document.getElementById('search-img');
+const gpsImg = document.getElementById('gps-img');
 const loader = document.getElementById('loader');
 
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
@@ -161,12 +161,6 @@ searchBox.addEventListener('keydown', e => {
         }
     },1);
 })
-
-// searchBox.addEventListener('blur', e => {
-//     if(e.target.value === ""){
-//         showErrorSearch();
-//     }
-// })
 
 //Mostra l'errore di ricerca
 function showErrorSearch(){
