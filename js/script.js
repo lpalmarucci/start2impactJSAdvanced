@@ -34,14 +34,13 @@ function callService(sendCoords){
     }).then(([lat, lng]) => {
         return sendCoords ? 
             fetch(`${BASE_URL}/geo:${lat};${lng}/?token=${API_KEY}`) :
-            fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
+            fetch(`${BASE_URL}/${searchBox.value.toLowerCase()}/?token=${API_KEY}`)
     })
 }
 
 //Funzione che effettua la chiamata all'API
 function searchAQI(sendCoords){
     
-    let cityName = searchBox.value.toLowerCase();
     loader.show("block");
     //Mostrare immagine di caricamento
     callService(sendCoords)
@@ -72,6 +71,7 @@ function searchAQI(sendCoords){
 function drawData(data){
     document.querySelector('.table-data > tbody')?.remove();
     document.querySelector('.data-title-info')?.remove();
+    //Titolo contenente nome della stazione trovata
     let span = document.createElement('span');
     span.className = "data-title-info";
     span.innerHTML = `Information about <b>${data.city.name}</b>`;
@@ -127,21 +127,23 @@ document.addEventListener('DOMContentLoaded', () => {
     //Quando premo ENTER oppure quando premo sull'icona, vado ad effettuare la ricerca
     document.querySelector('form').addEventListener('submit', searchAQI)
     searchImg.addEventListener('click', () => {
-        e.preventDefault();
         if(searchBox.value === ""){
             showErrorSearch();
             return;
         }
         searchAQI()
     });
-    gpsImg.addEventListener('click', () => searchAQI(true))
+    gpsImg.addEventListener('click', (e) => {
+        searchAQI(true);
+    })
 })
 
 searchBox.addEventListener('keydown', e => {
     //Impedisco di inserire caratteri che non siano lettere
     let keyCode = e.code.toLowerCase();
-    if(keyCode.indexOf('key') === -1 && keyCode != "backspace" && keyCode != "enter")
+    if(keyCode.indexOf('key') === -1 && keyCode != "backspace" && keyCode != "tab")
         e.preventDefault();
+    
     //Occorre il setTimeout perchè altrimenti non mi prenderebbe correttamente il value dell'input
     setTimeout(() => {
         if(e.target.value != ""){
@@ -160,11 +162,11 @@ searchBox.addEventListener('keydown', e => {
     },1);
 })
 
-searchBox.addEventListener('blur', e => {
-    if(e.target.value === ""){
-        showErrorSearch();
-    }
-})
+// searchBox.addEventListener('blur', e => {
+//     if(e.target.value === ""){
+//         showErrorSearch();
+//     }
+// })
 
 //Mostra l'errore di ricerca
 function showErrorSearch(){
