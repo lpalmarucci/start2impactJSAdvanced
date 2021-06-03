@@ -92,7 +92,19 @@ function updatedAt(date){
 function populateTable(data){
     let tbody = document.createElement('tbody');
 
-    console.log(data);
+    for(let key in data.iaqi){
+        let tr = document.createElement('tr');
+
+        function createTd(text){
+            let td = document.createElement('td');
+            td.innerText = text
+            tr.append(td);
+        }
+        createTd(key.toUpperCase());
+        createTd(data.iaqi[key].v);
+        
+        tbody.append(tr);
+    }
 
     document.querySelector('.table-data').append(tbody);
 }
