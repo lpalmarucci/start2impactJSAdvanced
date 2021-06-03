@@ -23,7 +23,7 @@ header{
         margin: 30px;
     }
     form{
-        width: 55%;
+        width: 70%;
         margin: 0 auto;
         display: flex;
         flex-direction: row;
@@ -32,9 +32,11 @@ header{
     
         #search-box{
             width: 80%;
+            min-width: 100px;
             height: 50px;
             font-size: 25px;
             padding: 10px 10px 10px 25px;
+            text-align: center;
 
             &:focus{outline: none}
         }
@@ -104,21 +106,29 @@ header{
         margin: 20px;
     }
 
-    .table-data{
-        width: 50vw;
-        margin: 0 auto;
-        font-size: 20px;
+    .table-container{
 
-        tbody{
-            border: 1px solid black;
-        }
+        height: 50vh;
+        min-height: 250px;
+        overflow: auto;
 
-        tr{
-            text-align: center;
-        }
-
-        td, th{
-            padding: 15px;
+        .table-data{
+            width: 50vw;
+            margin: 0 auto;
+            font-size: 20px;
+    
+            tbody{
+                border: 1px solid black;
+            }
+    
+            tr{
+                text-align: center;
+            }
+    
+            td, th{
+                padding: 15px;
+            }
         }
     }
+
 }

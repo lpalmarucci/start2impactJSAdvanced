@@ -1,4 +1,3 @@
-
 let searchBox = document.getElementById('search-box');
 let searchImg = document.getElementById('search-img');
 const loader = document.getElementById('loader');
@@ -21,7 +20,7 @@ Element.prototype.hide = function() {
 Element.prototype.show = function(type) {
     this.style.display = type;
 }
-
+//Nascondo la tabella
 document.querySelector('#data-container').hide();
 
 //Funzione che effettua la chiamata all'API
@@ -67,11 +66,9 @@ function drawData(data){
 
     populateTable(data);
 }
-
+//Mostro la data a cui risalgono i dati
 function updatedAt(date){
-    let title = document.querySelector('#data-container > h1');
-    if(title)
-        title.remove();
+    document.querySelector('#data-container > h1')?.hide();
     let h1 = document.createElement('h1');
     let months = date.getMonth();
     months = months < 10 ? `0${months}` : months;
@@ -81,7 +78,6 @@ function updatedAt(date){
 
     let hours = date.getHours();
     hours = hours < 10 ? `0${hours}` : hours;
-
 
     let minutes = date.getMinutes();
     minutes = minutes < 10 ? `0${minutes}` : minutes;
