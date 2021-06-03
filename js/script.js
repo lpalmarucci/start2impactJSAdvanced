@@ -14,6 +14,16 @@ class ResponseError extends Error{
     }
 }
 
+Element.prototype.hide = function() {
+    this.style.display = "none";
+}
+
+Element.prototype.show = function(type) {
+    this.style.display = type;
+}
+
+document.querySelector('#data-container').hide();
+
 //Funzione che effettua la chiamata all'API
 function searchAQI(e){
     //Fermo il submit del form
@@ -24,12 +34,13 @@ function searchAQI(e){
     }
 
     let cityName = searchBox.value.toLowerCase();
-    loader.style.display = "block";
+    loader.show("block");
     //Mostrare immagine di caricamento
     fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
         .then(res => {
             //Ho ricevuto i dati, nascondo il loader
-            loader.style.display = "none";
+            loader.hide();
+            document.querySelector('#data-container').show("flex");
             return res.json()
         })
         .then(res => {
@@ -41,6 +52,8 @@ function searchAQI(e){
             drawData(res.data);
         })
         .catch(err => {
+            loader.hide();
+            document.querySelector('#data-container').hide();
             console.error(err);
             //Disegno alert con messaggio d'errore
             drawAlert(err.message);
@@ -49,9 +62,7 @@ function searchAQI(e){
 
 //Draw function for data
 function drawData(data){
-    let bodyTable = document.querySelector('.table-data > tbody');
-    if(bodyTable)
-        bodyTable.remove();
+    document.querySelector('.table-data > tbody')?.remove();
     updatedAt(new Date(data.time.s));
 
     populateTable(data);
