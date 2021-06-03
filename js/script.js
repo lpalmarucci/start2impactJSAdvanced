@@ -1,10 +1,12 @@
 let searchBox = document.getElementById('search-box');
 let searchImg = document.getElementById('search-img');
+let gpsImg = document.getElementById('gps-img');
 const loader = document.getElementById('loader');
 
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
 
+//Customizzazione errore risposta API
 class ResponseError extends Error{
     constructor(message){
         super(message);
@@ -12,7 +14,7 @@ class ResponseError extends Error{
         this.message = `[Error] ${message}`
     }
 }
-
+//Per gestire più semplicemente lo show e l'hide di un elemento
 Element.prototype.hide = function() {
     this.style.display = "none";
 }
@@ -23,19 +25,26 @@ Element.prototype.show = function(type) {
 //Nascondo la tabella
 document.querySelector('#data-container').hide();
 
-//Funzione che effettua la chiamata all'API
-function searchAQI(e){
-    //Fermo il submit del form
-    e.preventDefault();
-    if(searchBox.value === ""){
-        showErrorSearch();
-        return;
-    }
+function callService(sendCoords){
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            let {latitude: lat, longitude: lng} = position.coords; 
+            resolve([lat,lng]);
+        })
+    }).then(([lat, lng]) => {
+        return sendCoords ? 
+            fetch(`${BASE_URL}/geo:${lat};${lng}/?token=${API_KEY}`) :
+            fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
+    })
+}
 
+//Funzione che effettua la chiamata all'API
+function searchAQI(sendCoords){
+    
     let cityName = searchBox.value.toLowerCase();
     loader.show("block");
     //Mostrare immagine di caricamento
-    fetch(`${BASE_URL}/${cityName}/?token=${API_KEY}`)
+    callService(sendCoords)
         .then(res => {
             //Ho ricevuto i dati, nascondo il loader
             loader.hide();
@@ -51,9 +60,9 @@ function searchAQI(e){
             drawData(res.data);
         })
         .catch(err => {
-            loader.hide();
-            document.querySelector('#data-container').hide();
             console.error(err);
+            loader.hide();
+            document.getElementById('data-container').hide();
             //Disegno alert con messaggio d'errore
             drawAlert(err.message);
         });
@@ -62,14 +71,21 @@ function searchAQI(e){
 //Draw function for data
 function drawData(data){
     document.querySelector('.table-data > tbody')?.remove();
+    document.querySelector('.data-title-info')?.remove();
+    let span = document.createElement('span');
+    span.className = "data-title-info";
+    span.innerHTML = `Information about <b>${data.city.name}</b>`;
+    document.getElementById('data-container').insertAdjacentElement('afterbegin', span);
+    
+    populateTable(data);
     updatedAt(new Date(data.time.s));
 
-    populateTable(data);
 }
 //Mostro la data a cui risalgono i dati
 function updatedAt(date){
-    document.querySelector('#data-container > h1')?.hide();
-    let h1 = document.createElement('h1');
+    document.querySelector('.updated-at')?.remove();
+    let span = document.createElement('span');
+    span.classList.add('updated-at');
     let months = date.getMonth();
     months = months < 10 ? `0${months}` : months;
 
@@ -81,8 +97,8 @@ function updatedAt(date){
 
     let minutes = date.getMinutes();
     minutes = minutes < 10 ? `0${minutes}` : minutes;
-    h1.innerHTML = `Last update at ${date.getFullYear()}/${months}/${days} ${hours}:${minutes}`;
-    document.getElementById('data-container').insertAdjacentElement('afterbegin',h1);
+    span.innerHTML = `Last update at ${date.getFullYear()}/${months}/${days} ${hours}:${minutes}`;
+    document.getElementById('data-container').insertAdjacentElement('beforeend',span);
 }
 
 function populateTable(data){
@@ -110,7 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Quando premo ENTER oppure quando premo sull'icona, vado ad effettuare la ricerca
     document.querySelector('form').addEventListener('submit', searchAQI)
-    searchImg.addEventListener('click', searchAQI)
+    searchImg.addEventListener('click', () => {
+        e.preventDefault();
+        if(searchBox.value === ""){
+            showErrorSearch();
+            return;
+        }
+        searchAQI()
+    });
+    gpsImg.addEventListener('click', () => searchAQI(true))
 })
 
 searchBox.addEventListener('keydown', e => {
