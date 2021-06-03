@@ -102,10 +102,13 @@ header{
     }
 
     .table-data{
-        border: 1px solid black;
         width: 50vw;
         margin: 0 auto;
         font-size: 20px;
+
+        tbody{
+            border: 1px solid black;
+        }
 
         tr{
             text-align: center;
