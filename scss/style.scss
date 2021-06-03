@@ -111,15 +111,14 @@ header{
     }
 
     .table-container{
-
         border: 2px solid black;
-        // border-radius: 20px;
         height: 50vh;
         min-height: 250px;
         overflow: auto;
 
         .table-data{
             width: 50vw;
+            max-width: 350px;
             margin: 0 auto;
             font-size: 20px;
     
@@ -143,6 +142,7 @@ header{
             }
         }
     }
+
 
     .updated-at{
         color:grey;
