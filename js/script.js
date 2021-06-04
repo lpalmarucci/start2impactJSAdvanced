@@ -81,9 +81,18 @@ function drawData(data){
     updatedAt(new Date(data.time.s));
 
     console.log(data);
+    let forecastSection = document.getElementById('forecast-section');
+    while(forecastSection.firstChild)
+        forecastSection.firstChild.remove();
     //Controllo se ci sono dei valori forecast da mostrare
-    if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0)
+    if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
         showForecast(data.forecast.daily);
+    } else{
+        //indico che non ci sono previsioni
+        let h2 = document.createElement('h2')
+        h2.innerText = "No forecast available";
+        document.getElementById('forecast-section').append(h2);
+    }
 
 }
 
