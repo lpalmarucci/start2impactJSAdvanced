@@ -12,11 +12,15 @@
         <h1>Check the air quality of your city</h1>
         <form method="POST" onsubmit="searchAQI">
             <div>
-                <input type="text" name="search-box" id="search-box" placeholder="Es. Turin" tabindex="1" value=""/>
+                <div class="row">
+                    <span id="clear-searchbox" data-operation="clear">X</span>
+                    <input type="text" name="search-box" id="search-box" placeholder="Es. Turin" tabindex="1" value=""/>
+                </div>
+                <div class="empty"></div>
                 <span class="search-box-error-message">Please, insert a valid name</span>
             </div>
-            <img src="images/search.svg" alt="search" title="Search" id="search-img" tabindex="2"/>
-            <img src="images/gps.svg" alt="gps" title="GPS" id="gps-img" tabindex="3"/>
+            <img src="images/search.svg" data-operation="search" alt="search" title="Search" id="search-img" tabindex="2"/>
+            <img src="images/gps.svg"  data-operation="search" data-geolocation="true" alt="gps" title="GPS" id="gps-img" tabindex="3"/>
         </form>
         <img id="loader" src="images/loader.gif" width="70" height="70"/> 
     </header>
@@ -36,8 +40,12 @@
         </div>
     </section>
 
-    <footer id="forecast-section">
-
+    <footer id="forecast">
+        <div class="title-section">
+            <h2 class="title"></h2>
+        </div>
+        <div id="forecast-section">
+        </div>
     </footer>
 
     <script src="js/script.js"></script>

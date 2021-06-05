@@ -2,6 +2,7 @@ const searchBox = document.getElementById('search-box');
 const searchImg = document.getElementById('search-img');
 const gpsImg = document.getElementById('gps-img');
 const loader = document.getElementById('loader');
+const clear = document.getElementById('clear-searchbox');
 
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
@@ -82,22 +83,27 @@ function drawData(data){
 
     console.log(data);
     let forecastSection = document.getElementById('forecast-section');
+    //indico che non ci sono previsioni
+    let h2 = document.querySelector('.title-section > h2');
+
+    //Svuoto le tabelle con dentro i valori del forecast 
     while(forecastSection.firstChild)
         forecastSection.firstChild.remove();
     //Controllo se ci sono dei valori forecast da mostrare
     if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
+        h2.innerText = "Forecast";
         showForecast(data.forecast.daily);
     } else{
-        //indico che non ci sono previsioni
-        let h2 = document.createElement('h2')
         h2.innerText = "No forecast available";
-        document.getElementById('forecast-section').append(h2);
     }
-
+    
 }
 
 function showForecast(forecastObj){
     for(let indicator in forecastObj){
+
+        // let div = document.createElement("div");
+        // div.innerText =
 
         // let table = document.createElement('table');
         let div = document.createElement('div');
@@ -107,7 +113,7 @@ function showForecast(forecastObj){
         let thead = document.createElement('thead');
         let tr = document.createElement('tr');
         let th = document.createElement('th');
-        th.innerText = indicator;
+        // th.innerText = indicator;
         tr.append(th);
         thead.append(tr);
         table.append(thead);
@@ -117,7 +123,6 @@ function showForecast(forecastObj){
         for(let {min, max, day} of forecastObj[indicator]){
             let tr = document.createElement('tr');
             let date = new Date(day);
-            console.log(min, max, day);
             let td = document.createElement('td');
             td.innerText = `${date} | ${min} | ${max}`;
             tr.append(td);
@@ -125,7 +130,7 @@ function showForecast(forecastObj){
         }
         table.append(tbody);
         div.append(table);
-        document.getElementById('forecast-section').append(div);
+        document.querySelector('#forecast-section').append(div);
     }
 }
 
@@ -174,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Quando premo ENTER oppure quando premo sull'icona, vado ad effettuare la ricerca
     document.querySelector('form').addEventListener('submit', searchAQI)
+
     searchImg.addEventListener('click', () => {
         if(searchBox.value === ""){
             showErrorSearch();
@@ -184,6 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
     gpsImg.addEventListener('click', (e) => {
         searchAQI(true);
     })
+
+    clear.addEventListener('click', () => {
+        searchBox.value ="";
+    });
+
 })
 
 searchBox.addEventListener('keydown', e => {
@@ -191,6 +202,7 @@ searchBox.addEventListener('keydown', e => {
     let keyCode = e.code.toLowerCase();
     if(keyCode.indexOf('key') === -1 && keyCode != "space" && keyCode != "backspace" && keyCode != "tab" || keyCode ==  "enter")
         e.preventDefault();
+
     //Occorre il setTimeout perchè altrimenti non mi prenderebbe correttamente il value dell'input
     setTimeout(() => {
         if(e.target.value != ""){
@@ -204,6 +216,10 @@ searchBox.addEventListener('keydown', e => {
                 let errorContainer = document.querySelector('.error-container')
                 errorContainer.style.opacity = 0;
                 setTimeout(() => errorContainer.remove(),1000);
+            } else{
+                //Se premo enter vuol dire che sto ricercando una città
+                if(keyCode === "enter")
+                searchAQI();
             }
         }
     },1);
