@@ -176,11 +176,13 @@ header{
 }
 #forecast-section{
     width: 80vw;
-    margin: 0 auto;
+    margin: 30px auto;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
+
+    align-items: flex-start;
     // border: 1px solid black;
 
     .title{
@@ -199,7 +201,14 @@ header{
         font-size: 18px;
 
         td{
-            padding: 5px;
+            padding: 10px 20px;
         }
+    }
+
+    .forecast-subsection{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 }

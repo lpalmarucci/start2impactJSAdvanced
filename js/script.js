@@ -23,6 +23,7 @@ Element.prototype.hide = function() {
 Element.prototype.show = function(type) {
     this.style.display = type;
 }
+
 //Nascondo la tabella
 document.querySelector('#data-container').hide();
 
@@ -84,26 +85,31 @@ function drawData(data){
     console.log(data);
     let forecastSection = document.getElementById('forecast-section');
     //indico che non ci sono previsioni
-    let h2 = document.querySelector('.title-section > h2');
-
+    let h1 = document.querySelector('.title-section > h1');
+    h1.className = "forecast-title";
     //Svuoto le tabelle con dentro i valori del forecast 
     while(forecastSection.firstChild)
         forecastSection.firstChild.remove();
     //Controllo se ci sono dei valori forecast da mostrare
     if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
-        h2.innerText = "Forecast";
+        h1.innerText = "Forecast";
         showForecast(data.forecast.daily);
     } else{
-        h2.innerText = "No forecast available";
+        h1.innerText = "No forecast available";
     }
     
 }
 
 function showForecast(forecastObj){
+    let forecastSection = document.getElementById('forecast-section');
     for(let indicator in forecastObj){
 
-        // let div = document.createElement("div");
-        // div.innerText =
+        let divWrapper = document.createElement("div");
+        divWrapper.classList.add('forecast-subsection');
+        let h3 = document.createElement('h3');
+        h3.innerText = indicator.toUpperCase();
+        divWrapper.append(h3);
+        forecastSection.append(divWrapper)
 
         // let table = document.createElement('table');
         let div = document.createElement('div');
@@ -112,8 +118,12 @@ function showForecast(forecastObj){
         table.className = "single-forecast";
         let thead = document.createElement('thead');
         let tr = document.createElement('tr');
-        let th = document.createElement('th');
-        // th.innerText = indicator;
+
+        let th = createTH('Date');
+        tr.append(th);
+        th = createTH('Min');
+        tr.append(th);
+        th = createTH('Max');
         tr.append(th);
         thead.append(tr);
         table.append(thead);
@@ -123,14 +133,20 @@ function showForecast(forecastObj){
         for(let {min, max, day} of forecastObj[indicator]){
             let tr = document.createElement('tr');
             let date = new Date(day);
-            let td = document.createElement('td');
-            td.innerText = `${date} | ${min} | ${max}`;
+            let str = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate();
+            let td = createTD(str);
+            tr.append(td);
+            
+            td = createTD(`${min}`);
+            tr.append(td);
+            
+            td = createTD(`${max}`);
             tr.append(td);
             tbody.append(tr);
         }
         table.append(tbody);
         div.append(table);
-        document.querySelector('#forecast-section').append(div);
+        divWrapper.append(div);
     }
 }
 
@@ -160,13 +176,11 @@ function populateTable(data){
     for(let key in data.iaqi){
         let tr = document.createElement('tr');
 
-        function createTd(text){
-            let td = document.createElement('td');
-            td.innerText = text
-            tr.append(td);
-        }
-        createTd(key.toUpperCase());
-        createTd(data.iaqi[key].v);
+
+        let td = createTD(key.toUpperCase());
+        tr.append(td);
+        td = createTD(data.iaqi[key].v);
+        tr.append(td);
         
         tbody.append(tr);
     }
@@ -276,4 +290,16 @@ function drawAlert(text) {
         } 
         line.style.width =  `${width - 1}px`;
     }, 6);
+}
+
+function createTD(text){
+    let td = document.createElement('td');
+    td.innerText = text;
+    return td;
+}
+
+function createTH(txt){
+    let th = document.createElement('th');
+    th.innerText = txt;
+    return th;
 }
