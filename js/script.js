@@ -125,11 +125,11 @@ function showForecast(forecastObj){
         let thead = document.createElement('thead');
         let tr = document.createElement('tr');
 
-        let th = createTH('Date');
+        let th = createCell('th','Date');
         tr.append(th);
-        th = createTH('Min');
+        th = createCell('th','Min');
         tr.append(th);
-        th = createTH('Max');
+        th = createCell('th','Max');
         tr.append(th);
         thead.append(tr);
         table.append(thead);
@@ -140,13 +140,13 @@ function showForecast(forecastObj){
             let tr = document.createElement('tr');
             let date = new Date(day);
             let str = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate();
-            let td = createTD(str);
+            let td = createCell('td',str);
             tr.append(td);
             
-            td = createTD(`${min}`);
+            td = createCell('td',`${min}`);
             tr.append(td);
             
-            td = createTD(`${max}`);
+            td = createCell('td',`${max}`);
             tr.append(td);
             tbody.append(tr);
         }
@@ -183,9 +183,9 @@ function populateTable(data){
         let tr = document.createElement('tr');
 
 
-        let td = createTD(key.toUpperCase());
+        let td = createCell('td',key.toUpperCase());
         tr.append(td);
-        td = createTD(data.iaqi[key].v);
+        td = createCell('td',data.iaqi[key].v);
         tr.append(td);
         
         tbody.append(tr);
@@ -227,7 +227,6 @@ searchBox.addEventListener('keydown', e => {
     setTimeout(() => {
         if(e.target.value != ""){
             if(e.target.classList.contains('search-box-error')){
-
                 document.querySelector('.search-box-error-message').style.opacity = 0;
                 searchBox.classList.remove('search-box-error');
             }
@@ -298,14 +297,9 @@ function drawAlert(text) {
     }, 6);
 }
 
-function createTD(text){
-    let td = document.createElement('td');
-    td.innerText = text;
-    return td;
-}
-
-function createTH(txt){
-    let th = document.createElement('th');
-    th.innerText = txt;
-    return th;
+//Funzioni di disegno
+function createCell(type, text){
+    let element = document.createElement(type);
+    element.innerText = text;
+    return element;
 }
