@@ -7,6 +7,45 @@ const clear = document.getElementById('clear-searchbox');
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
 
+const AQI_MEASUREMENT = {
+    good: {
+        interval: {
+            from: 0,
+            to : 50
+        }
+    },
+    moderate: {
+        interval: {
+            from: 51,
+            to: 100
+        }
+    },
+    unhealthy_for_sensitive_groups:{
+        interval: {
+            from: 101,
+            to: 150
+        }
+    }, 
+    unhealthy: {
+        interval: {
+            from: 151,
+            to: 200
+        }
+    },
+    very_unhealthy: {
+        interval: {
+            from: 201,
+            to: 300
+        }
+    },
+    hazardous: {
+        interval: {
+            from: 300,
+            to: null
+        }
+    }
+}
+
 //Customizzazione errore risposta API
 class ResponseError extends Error{
     constructor(message){
@@ -22,6 +61,22 @@ Element.prototype.hide = function() {
 
 Element.prototype.show = function(type) {
     this.style.display = type;
+}
+
+//Customizzo il metodo toString in modo da ritornarmi quello che desidero
+Date.prototype.toString = function(){
+    let d = this.getDate();
+    let m = this.getMonth();
+    let h = this.getHours();
+    let min = this.getMinutes();
+    let y = this.getFullYear();
+
+    m = m < 10 ? `0${m}` : m;
+    d = d < 10 ? `0${d}` : d;
+    h = h < 10 ? `0${h}` : h;
+    min = min < 10 ? `0${min}` : min;
+
+    return `${y}/${m}/${d} ${h}:${min}`;
 }
 
 //Nascondo la tabella
@@ -62,7 +117,7 @@ function searchAQI(sendCoords){
             drawData(res.data);
         })
         .catch(err => {
-            console.error(err);
+            //Nascondo la parte di disegno dei risultati
             loader.hide();
             document.getElementById('data-container').hide();
             document.getElementById('forecast').hide();
@@ -97,13 +152,11 @@ function drawData(data){
     //Controllo se ci sono dei valori forecast da mostrare
     if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
         h1.innerText = "Forecast";
-
         document.getElementById('forecast').show('flex');
         showForecast(data.forecast.daily);
     } else{
         h1.innerText = "No forecast available";
     }
-    
 }
 
 function showForecast(forecastObj){
@@ -139,7 +192,10 @@ function showForecast(forecastObj){
         for(let {min, max, day} of forecastObj[indicator]){
             let tr = document.createElement('tr');
             let date = new Date(day);
-            let str = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate();
+
+
+
+            let str = date.toString().split(' ')[0];
             let td = createCell('td',str);
             tr.append(td);
             
@@ -181,7 +237,6 @@ function populateTable(data){
 
     for(let key in data.iaqi){
         let tr = document.createElement('tr');
-
 
         let td = createCell('td',key.toUpperCase());
         tr.append(td);
@@ -297,7 +352,7 @@ function drawAlert(text) {
     }, 6);
 }
 
-//Funzioni di disegno
+//Funzione di disegno cella tabella
 function createCell(type, text){
     let element = document.createElement(type);
     element.innerText = text;
