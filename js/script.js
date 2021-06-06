@@ -26,6 +26,7 @@ Element.prototype.show = function(type) {
 
 //Nascondo la tabella
 document.querySelector('#data-container').hide();
+document.getElementById('aiq-info').hide();
 
 function callService(sendCoords){
     return new Promise((resolve, reject) => {
@@ -64,6 +65,8 @@ function searchAQI(sendCoords){
             console.error(err);
             loader.hide();
             document.getElementById('data-container').hide();
+            document.getElementById('forecast').hide();
+            document.getElementById('aiq-info').hide();
             //Disegno alert con messaggio d'errore
             drawAlert(err.message);
         });
@@ -73,6 +76,7 @@ function searchAQI(sendCoords){
 function drawData(data){
     document.querySelector('.table-data > tbody')?.remove();
     document.querySelector('.data-title-info')?.remove();
+    document.getElementById('aiq-info').show('flex');
     //Titolo contenente nome della stazione trovata
     let span = document.createElement('span');
     span.className = "data-title-info";
@@ -93,6 +97,8 @@ function drawData(data){
     //Controllo se ci sono dei valori forecast da mostrare
     if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
         h1.innerText = "Forecast";
+
+        document.getElementById('forecast').show('flex');
         showForecast(data.forecast.daily);
     } else{
         h1.innerText = "No forecast available";
