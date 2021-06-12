@@ -4,9 +4,6 @@ const gpsImg = document.getElementById('gps-img');
 const loader = document.getElementById('loader');
 const clear = document.getElementById('clear-searchbox');
 
-const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
-const BASE_URL = "https://api.waqi.info/feed";
-
 const AQI_MEASUREMENTS = {
     good: {
         interval: {
@@ -96,8 +93,8 @@ function callService(sendCoords){
         })
     }).then(({latitude, longitude} ) => {
         return sendCoords ? 
-            fetch(`${BASE_URL}/geo:${latitude};${longitude}/?token=${API_KEY}`) :
-            fetch(`${BASE_URL}/${searchBox.value.toLowerCase()}/?token=${API_KEY}`)
+            fetch(`${process.env.BASE_URL}/geo:${latitude};${longitude}/?token=${process.env.API_KEY}`) :
+            fetch(`${process.env.BASE_URL}/${searchBox.value.toLowerCase()}/?token=${process.env.API_KEY}`)
     })
 }
 
