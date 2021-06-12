@@ -185,11 +185,6 @@ header{
     align-items: flex-start;
     // border: 1px solid black;
 
-    .title{
-        display: block;
-        text-align: center;
-    }
-
     .forecast-wrapper{
         width: auto;
         margin: 15px;
@@ -216,4 +211,10 @@ header{
 #aiq-info{
     display: flex;
     justify-content: center;
+}
+
+.title{
+    display: block;
+    text-align: center;
+    font-size: 30px;
 }

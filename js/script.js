@@ -12,37 +12,43 @@ const AQI_MEASUREMENT = {
         interval: {
             from: 0,
             to : 50
-        }
+        },
+        color: 'green'
     },
     moderate: {
         interval: {
             from: 51,
             to: 100
-        }
+        },
+        color: 'yellow'
     },
     unhealthy_for_sensitive_groups:{
         interval: {
             from: 101,
             to: 150
-        }
+        },
+        color: 'orange'
     }, 
     unhealthy: {
         interval: {
             from: 151,
             to: 200
-        }
+        },
+        color: 'red'
     },
     very_unhealthy: {
         interval: {
             from: 201,
             to: 300
-        }
+        },
+        color: 'purple'
     },
     hazardous: {
         interval: {
             from: 300,
             to: null
-        }
+        },
+        color: 'darkred'
     }
 }
 
@@ -86,12 +92,11 @@ document.getElementById('aiq-info').hide();
 function callService(sendCoords){
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((position) => {
-            let {latitude: lat, longitude: lng} = position.coords; 
-            resolve([lat,lng]);
+            resolve(position.coords);
         })
-    }).then(([lat, lng]) => {
+    }).then(({latitude, longitude} ) => {
         return sendCoords ? 
-            fetch(`${BASE_URL}/geo:${lat};${lng}/?token=${API_KEY}`) :
+            fetch(`${BASE_URL}/geo:${latitude};${longitude}/?token=${API_KEY}`) :
             fetch(`${BASE_URL}/${searchBox.value.toLowerCase()}/?token=${API_KEY}`)
     })
 }
@@ -129,6 +134,10 @@ function searchAQI(sendCoords){
 
 //Draw function for data
 function drawData(data){
+
+    showQuality(data.aqi);
+
+
     document.querySelector('.table-data > tbody')?.remove();
     document.querySelector('.data-title-info')?.remove();
     document.getElementById('aiq-info').show('flex');
@@ -144,8 +153,9 @@ function drawData(data){
     console.log(data);
     let forecastSection = document.getElementById('forecast-section');
     //indico che non ci sono previsioni
-    let h1 = document.querySelector('.title-section > h1');
-    h1.className = "forecast-title";
+    let h1 = document.querySelector('.title-section > span');
+    h1.className = "title";
+    h1.style.fontWeight = "bold";
     //Svuoto le tabelle con dentro i valori del forecast 
     while(forecastSection.firstChild)
         forecastSection.firstChild.remove();
@@ -159,6 +169,14 @@ function drawData(data){
     }
 }
 
+//Disegno livello di qualità dell'aria
+function showQuality(level){
+    let quality = document.querySelector('#aiq-info > .title > b');
+
+    quality.innerText = level;
+}
+
+//Disegno i valori previsti dal forecast in una sezione a parte
 function showForecast(forecastObj){
     let forecastSection = document.getElementById('forecast-section');
     for(let indicator in forecastObj){
@@ -232,6 +250,7 @@ function updatedAt(date){
     document.getElementById('data-container').insertAdjacentElement('beforeend',span);
 }
 
+//Popolo la tabella con i dati IAQI
 function populateTable(data){
     let tbody = document.createElement('tbody');
 
@@ -308,6 +327,7 @@ function showErrorSearch(){
     errorMessage.style.opacity = 1;
 }
 
+//Funzione di disegno dell'alert in caso di errore
 function drawAlert(text) {
     alertShowInPage = true;
 
