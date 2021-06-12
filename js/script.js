@@ -7,7 +7,7 @@ const clear = document.getElementById('clear-searchbox');
 const API_KEY = "a2ef6934b6a41dc2345540701548d8a539da7cb9";
 const BASE_URL = "https://api.waqi.info/feed";
 
-const AQI_MEASUREMENT = {
+const AQI_MEASUREMENTS = {
     good: {
         interval: {
             from: 0,
@@ -114,7 +114,6 @@ function searchAQI(sendCoords){
             return res.json()
         })
         .then(res => {
-            console.log(res);
             if(res.status != "ok"){
                 throw new ResponseError(res.data);
             }
@@ -134,9 +133,7 @@ function searchAQI(sendCoords){
 
 //Draw function for data
 function drawData(data){
-
     showQuality(data.aqi);
-
 
     document.querySelector('.table-data > tbody')?.remove();
     document.querySelector('.data-title-info')?.remove();
@@ -148,9 +145,11 @@ function drawData(data){
     document.getElementById('data-container').insertAdjacentElement('afterbegin', span);
     
     populateTable(data);
-    updatedAt(new Date(data.time.s));
+    if(data.time.s != "")
+        updatedAt(new Date(data.time.s));
+    else
+        updatedAt('');
 
-    console.log(data);
     let forecastSection = document.getElementById('forecast-section');
     //indico che non ci sono previsioni
     let h1 = document.querySelector('.title-section > span');
@@ -160,7 +159,7 @@ function drawData(data){
     while(forecastSection.firstChild)
         forecastSection.firstChild.remove();
     //Controllo se ci sono dei valori forecast da mostrare
-    if(data.forecast.daily && Object.keys(data.forecast.daily).length > 0){
+    if(data.forecast?.daily && Object.keys(data.forecast.daily).length > 0){
         h1.innerText = "Forecast";
         document.getElementById('forecast').show('flex');
         showForecast(data.forecast.daily);
@@ -172,8 +171,23 @@ function drawData(data){
 //Disegno livello di qualità dell'aria
 function showQuality(level){
     let quality = document.querySelector('#aiq-info > .title > b');
+    let textLevel = Object.assign({},{text: level});
+    let status;
+    if(level != '-'){
+        for(status in AQI_MEASUREMENTS){
+            let {interval, color} = AQI_MEASUREMENTS[status];
+            if(level >= interval.from && level <= interval.to){
+                quality.style.color = color;
+                break;
+            }
+        }
+        status = status.replace('_',' ').toUpperCase();
+    } else{
+        text_no_available = "No level available";
+        quality.style.color = "grey"
+    }
 
-    quality.innerText = level;
+    quality.innerText = level != '-' ? textLevel.text+ ` (${status})` : text_no_available;
 }
 
 //Disegno i valori previsti dal forecast in una sezione a parte
@@ -211,8 +225,6 @@ function showForecast(forecastObj){
             let tr = document.createElement('tr');
             let date = new Date(day);
 
-
-
             let str = date.toString().split(' ')[0];
             let td = createCell('td',str);
             tr.append(td);
@@ -235,19 +247,27 @@ function updatedAt(date){
     document.querySelector('.updated-at')?.remove();
     let span = document.createElement('span');
     span.classList.add('updated-at');
-    let months = date.getMonth();
-    months = months < 10 ? `0${months}` : months;
+    let text;
+    try{
+        let months = date.getMonth();
+        months = months < 10 ? `0${months}` : months;
+    
+        let days = date.getDate();
+        days = days < 10 ? `0${days}` : days;
+    
+        let hours = date.getHours();
+        hours = hours < 10 ? `0${hours}` : hours;
+    
+        let minutes = date.getMinutes();
+        minutes = minutes < 10 ? `0${minutes}` : minutes;
+        text = `Last update at ${date.toString()}`;
+    } catch (e) {
+        text = `There isn\'t a time`;
+    } finally {
+        span.innerText = text;
+        document.getElementById('data-container').insertAdjacentElement('beforeend',span);
+    }
 
-    let days = date.getDate();
-    days = days < 10 ? `0${days}` : days;
-
-    let hours = date.getHours();
-    hours = hours < 10 ? `0${hours}` : hours;
-
-    let minutes = date.getMinutes();
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
-    span.innerHTML = `Last update at ${date.getFullYear()}/${months}/${days} ${hours}:${minutes}`;
-    document.getElementById('data-container').insertAdjacentElement('beforeend',span);
 }
 
 //Popolo la tabella con i dati IAQI
